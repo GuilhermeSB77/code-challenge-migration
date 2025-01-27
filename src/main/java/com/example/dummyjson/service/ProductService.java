@@ -3,11 +3,9 @@ package com.example.dummyjson.service;
 import com.example.dummyjson.dto.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,15 +14,24 @@ public class ProductService {
     private final String BASE_URL = "https://dummyjson.com/products";
 
     @Autowired
-    private RestTemplate restTemplate;
+    private WebClient.Builder webClientBuilder;
 
     public List<Product> getAllProducts() {
-        Product[] products = restTemplate.getForObject(BASE_URL, Product[].class);
+        WebClient webClient = webClientBuilder.baseUrl(BASE_URL).build();
+        Product[] products = webClient.get()
+                .retrieve()
+                .bodyToMono(Product[].class)
+                .block();
         return Arrays.asList(products);
     }
 
     public Product getProductById(Long id) {
+        WebClient webClient = webClientBuilder.baseUrl(BASE_URL).build();
         String url = BASE_URL + "/" + id;
-        return restTemplate.getForObject(url, Product.class);
+        return webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(Product.class)
+                .block();
     }
 }
