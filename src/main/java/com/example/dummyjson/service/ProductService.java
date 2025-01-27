@@ -5,31 +5,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class ProductService {
 
-    private final String BASE_URL = "https://dummyjson.com/products";
+    private final WebClient webClient;
 
     @Autowired
-    private WebClient.Builder webClientBuilder;
+    public ProductService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     public List<Product> getAllProducts() {
-        WebClient webClient = webClientBuilder.baseUrl(BASE_URL).build();
-        Product[] products = webClient.get()
+        return webClient.get()
+                .uri("/products")
                 .retrieve()
-                .bodyToMono(Product[].class)
+                .bodyToFlux(Product.class)
+                .collectList()
                 .block();
-        return Arrays.asList(products);
     }
 
     public Product getProductById(Long id) {
-        WebClient webClient = webClientBuilder.baseUrl(BASE_URL).build();
-        String url = BASE_URL + "/" + id;
         return webClient.get()
-                .uri(url)
+                .uri("/products/{id}", id)
                 .retrieve()
                 .bodyToMono(Product.class)
                 .block();

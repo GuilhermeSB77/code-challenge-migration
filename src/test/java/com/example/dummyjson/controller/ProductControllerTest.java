@@ -2,30 +2,35 @@ package com.example.dummyjson.controller;
 
 import com.example.dummyjson.dto.Product;
 import com.example.dummyjson.service.ProductService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ProductControllerTest {
 
-    @InjectMocks
-    private ProductController productController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private ProductService productService;
 
-    @Test
-    public void testGetAllProducts() {
+    @BeforeEach
+    public void setUp() {
         Product product1 = new Product();
         product1.setId(1L);
         product1.setTitle("Product 1");
@@ -37,20 +42,22 @@ public class ProductControllerTest {
         List<Product> products = Arrays.asList(product1, product2);
         when(productService.getAllProducts()).thenReturn(products);
 
-        List<Product> result = productController.getAllProducts();
-        assertEquals(2, result.size());
-        assertEquals("Product 1", result.get(0).getTitle());
+        when(productService.getProductById(1L)).thenReturn(product1);
     }
 
     @Test
-    public void testGetProductById() {
-        Product product = new Product();
-        product.setId(1L);
-        product.setTitle("Product 1");
+    public void testGetAllProducts() throws Exception {
+        mockMvc.perform(get("/api/products"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].title", is("Product 1")))
+                .andExpect(jsonPath("$[1].title", is("Product 2")));
+    }
 
-        when(productService.getProductById(1L)).thenReturn(product);
-
-        Product result = productController.getProductById(1L);
-        assertEquals("Product 1", result.getTitle());
+    @Test
+    public void testGetProductById() throws Exception {
+        mockMvc.perform(get("/api/products/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title", is("Product 1")));
     }
 }
