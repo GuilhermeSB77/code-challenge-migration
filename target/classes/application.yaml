@@ -1,9 +1,0 @@
-server:
-  port: 8080
-  
-endpoint:
-  url: https://dummyjson.com
-
-spring:
-  profiles:
-    active: dev
