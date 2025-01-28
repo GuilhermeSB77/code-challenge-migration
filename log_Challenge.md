@@ -49,6 +49,7 @@ dummyjson-client
 │       │       └── service
 │       │           └── ProductServiceTest.java
 │       └── resources
+├── Dockerfile
 └── pom.xml
 ```
 
@@ -77,6 +78,11 @@ dummyjson-client
 3. Acesse o serviço:
 
     O serviço estará disponível em `http://localhost:8080`.
+
+    Verifique a disponibilidade do microsserviço:
+
+    A saúde do microsserviço pode ser verificada no endpoint `http://localhost:8080/actuator/health`.
+
     Acesse o Swagger UI:
 Após iniciar a aplicação, acesse a URL: `http://localhost:8080/swagger-ui.html`
 
@@ -93,6 +99,25 @@ Para executar os testes unitários:
 ```bash
 mvn clean test
 ```
+
+### Executar a Aplicação com Docker
+
+1. **Construa a imagem Docker:** Certifique-se de ter o Docker instalado e execute o seguinte comando na raiz do projeto:
+
+    ```bash
+    mvn clean package
+    docker build -t dummyjsonclientjava8 .
+    ```
+
+2. **Execute o contêiner:** Para rodar a aplicação com Docker, você pode passar a variável de ambiente SPRING_PROFILE para definir o perfil ativo (por exemplo test, dev, prod):
+
+    ```bash
+    docker run -p 8080:8080 dummyjsonclientjava8
+    ```
+
+3. Acesse a aplicação no navegador ou cliente HTTP: 
+O serviço estará disponível em `http://localhost:8080`.
+
 
 ## Requisitos de Entrega atendidos
 
