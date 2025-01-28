@@ -77,13 +77,13 @@ dummyjson-client
 
 3. Acesse o serviço:
 
-    O serviço estará disponível em `http://localhost:8080`.
+    O serviço estará disponível em `http://localhost:8080/api/products/1`.
 
     Verifique a disponibilidade do microsserviço:
 
     A saúde do microsserviço pode ser verificada no endpoint `http://localhost:8080/actuator/health`.
 
-    Acesse o Swagger UI:
+4. Acesse o Swagger UI:
 Após iniciar a aplicação, acesse a URL: `http://localhost:8080/swagger-ui.html`
 
 Teste o endpoint no Swagger UI:
@@ -106,17 +106,17 @@ mvn clean test
 
     ```bash
     mvn clean package
-    docker build -t dummyjsonclientjava8 .
+    docker build -t dummyjsonclientjava17 .
     ```
 
 2. **Execute o contêiner:** Para rodar a aplicação com Docker, você pode passar a variável de ambiente SPRING_PROFILE para definir o perfil ativo (por exemplo test, dev, prod):
 
     ```bash
-    docker run -p 8080:8080 dummyjsonclientjava8
+    docker run -p 8080:8080 dummyjsonclientjava17
     ```
 
 3. Acesse a aplicação no navegador ou cliente HTTP: 
-O serviço estará disponível em `http://localhost:8080`.
+O serviço estará disponível em `http://localhost:8080/api/products/1`. e também no swagger `http://localhost:8080/swagger-ui.html`
 
 
 ## Requisitos de Entrega atendidos
@@ -128,14 +128,4 @@ O serviço estará disponível em `http://localhost:8080`.
 5. Garantir que todos os testes ainda passam após a migração.
 6. Deixar a URL da API dummyjson parametrizada por ambiente no projeto.
 7. Adicionar no projeto um novo path `/health` que retorna a saude do microsserviço.
-
-## Validação Sobre o Challenge
-
-- O projeto deve estar funcionando em Java 17 e Spring Boot 3.2.5.
-- Todos os testes unitários devem ser executados e passar sem falhas.
-- O código deve estar devidamente documentado e organizado.
-
-## Extras
-
-- Entregar o projeto em container será um diferencial.
-- Fica a critério do desenvolvedor inserir ou remover dependencias do projeto para garantir o objetivo do challenge.
+8. Entregar o projeto em container
